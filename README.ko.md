@@ -198,12 +198,25 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
 
 ## 사용법
 
+### `tc` 명령어
+
+`~/.zshrc`에 추가하면 모든 시나리오를 `tc` 하나로 처리합니다:
+
+```bash
+# tmux + Claude Code: attach if session exists, create + start claude if not
+tc() {
+  tmux attach -t claude 2>/dev/null || { tmux new -s claude -d && tmux send-keys -t claude "claude" Enter && tmux attach -t claude; }
+}
+```
+
+- 세션 없으면 → tmux 생성 + Claude Code 자동 실행
+- 세션 있으면 → 기존 세션에 바로 붙기
+
 ### 시나리오 1: Mac에서 시작, 아이폰에서 이어서
 
 **Mac (외출 전):**
 ```bash
-tmux new -s claude       # 1. tmux 세션 생성
-claude                   # 2. Claude Code 시작
+tc                       # tmux + Claude Code 시작
 # 작업 지시 후 자리 비움
 # detach 안 해도 됨 — 덮개 닫거나 그냥 나가면 됨
 ```
@@ -211,8 +224,7 @@ claude                   # 2. Claude Code 시작
 **iPhone (이동 중):**
 ```bash
 # 1. Termius 열고 호스트 접속
-tmux attach -t claude    # 2. 기존 세션에 붙기
-# Claude Code가 그대로 보임
+tc                       # 기존 세션에 자동으로 붙음
 # ntfy 푸시 알림: Claude가 입력 대기 60초 넘으면 알림 옴
 ```
 
@@ -220,8 +232,7 @@ tmux attach -t claude    # 2. 기존 세션에 붙기
 
 ```bash
 # 1. Termius 열고 호스트 접속
-tmux new -s claude       # 2. tmux 세션 생성
-claude                   # 3. Claude Code 시작
+tc                       # tmux + Claude Code 자동 시작
 # 한글 입력: 메모앱에서 타이핑 후 복사붙여넣기
 ```
 
@@ -230,7 +241,7 @@ claude                   # 3. Claude Code 시작
 ```bash
 # 연결 끊김 (지하철, 와이파이 전환 등)
 # 1. Termius 다시 열고 호스트 접속
-tmux attach -t claude    # 2. 세션은 살아있음
+tc                       # 세션 살아있으면 자동으로 붙음
 ```
 
 ### 종료하기

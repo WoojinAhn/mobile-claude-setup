@@ -198,12 +198,25 @@ Once installation is complete, keep your Mac ready for remote access at any time
 
 ## Usage
 
+### `tc` command
+
+Add to `~/.zshrc` to handle all scenarios with a single command:
+
+```bash
+# tmux + Claude Code: attach if session exists, create + start claude if not
+tc() {
+  tmux attach -t claude 2>/dev/null || { tmux new -s claude -d && tmux send-keys -t claude "claude" Enter && tmux attach -t claude; }
+}
+```
+
+- No session → creates tmux + auto-starts Claude Code
+- Session exists → attaches to existing session
+
 ### Scenario 1: Start on Mac, continue on iPhone
 
 **Mac (before leaving):**
 ```bash
-tmux new -s claude       # 1. Create tmux session
-claude                   # 2. Start Claude Code
+tc                       # tmux + Claude Code start
 # Give Claude a task, then leave
 # No need to detach — just close the lid or walk away
 ```
@@ -211,8 +224,7 @@ claude                   # 2. Start Claude Code
 **iPhone (on the go):**
 ```bash
 # 1. Open Termius, connect to host
-tmux attach -t claude    # 2. Attach to existing session
-# Claude Code is right where you left it
+tc                       # Auto-attaches to existing session
 # ntfy push notification arrives when Claude needs input (after 60s idle)
 ```
 
@@ -220,8 +232,7 @@ tmux attach -t claude    # 2. Attach to existing session
 
 ```bash
 # 1. Open Termius, connect to host
-tmux new -s claude       # 2. Create tmux session
-claude                   # 3. Start Claude Code
+tc                       # tmux + Claude Code auto-start
 # Korean input: type in Notes app, paste into terminal
 ```
 
@@ -230,7 +241,7 @@ claude                   # 3. Start Claude Code
 ```bash
 # Connection dropped (subway, wifi switch, etc.)
 # 1. Reopen Termius, connect to host
-tmux attach -t claude    # 2. Session is still alive
+tc                       # Auto-attaches if session is alive
 ```
 
 ### Ending a session
