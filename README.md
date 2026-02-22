@@ -212,7 +212,24 @@ Once installation is complete, keep your Mac ready for remote access at any time
 - **Tailscale running** — add to Login Items for auto-start on boot
 - **SSH enabled** — persists across reboots once enabled
 
-> Mac mini / desktop: just leave it on. MacBook: closing the lid is fine (sleep mode keeps network alive), but watch battery drain.
+> MacBook: closing the lid is fine (sleep mode keeps network alive), but watch battery drain.
+
+### Mac mini: scheduled wake/sleep
+
+Rather than leaving it always on, you can schedule wake and sleep at fixed times:
+
+```bash
+# Wake at 10am, sleep at 10pm, every day
+sudo pmset repeat wake MTWRFSU 10:00:00 sleep MTWRFSU 22:00:00
+```
+
+Verify:
+
+```bash
+pmset -g | grep -A3 "Repeating"
+```
+
+> Outside the scheduled hours the Mac mini is asleep and unreachable. Plan your access window accordingly.
 
 ---
 
