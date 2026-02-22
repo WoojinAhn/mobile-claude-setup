@@ -22,7 +22,7 @@ flowchart LR
 |------|------|-------------|
 | **Tailscale** | VPN | 포트포워딩/방화벽 없이 어디서든 Mac에 접속. 카페, 지하철, 호텔 와이파이 어디든 |
 | **tmux** | 세션 유지 | SSH 끊겨도 Claude Code가 계속 돌아감 (아래 상세 설명) |
-| **Mosh** | 연결 안정성 | SSH 위에 올라가는 프로토콜. 셀룰러↔와이파이 전환, 일시적 신호 끊김에도 연결 유지. **단, iOS에서 한글 입력이 깨져서 현재 미사용** |
+| **Mosh** | 연결 안정성 | SSH 위에 올라가는 프로토콜. 셀룰러↔와이파이 전환, 일시적 신호 끊김에도 연결 유지. 셸에서 한글 입력이 깨지지만, Claude Code에서도 복붙이 필요하므로 연결 안정성을 위해 사용 |
 | **Termius** | SSH 클라이언트 | 아이폰에서 터미널 접속하는 앱 |
 | **ntfy** | 푸시 알림 | Claude Code가 입력 대기 중이면 폰에 알림 |
 
@@ -106,8 +106,8 @@ tailscale ip
 brew install mosh
 ```
 
-> **주의**: Mosh 사용 시 iOS에서 한글 입력이 깨짐. 일반 SSH를 사용하는 것을 권장.
-> Mosh 경로 (필요 시): `/opt/homebrew/bin/mosh-server`
+> Mosh 사용 시 셸에서 한글 입력이 깨지지만, Claude Code 자체도 복붙이 필요하므로 큰 차이 없음.
+> 연결 안정성이 올라가므로 사용 권장.
 
 ### 4. tmux 설정
 
@@ -178,7 +178,8 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Port**: 22
    - **Username**: Mac 사용자 이름
    - **Password**: Mac 로그인 비밀번호
-   - **Mosh**: OFF (Mosh 켜면 셸에서 한글 입력 깨짐. Claude Code 한글 입력은 Mosh와 무관하게 별도 버그)
+   - **Mosh**: ON
+   - **Mosh Command**: `/opt/homebrew/bin/mosh-server new -s -c 256 -l LANG=en_US.UTF-8`
 
 ---
 
@@ -261,7 +262,7 @@ exit                     # 2. tmux 세션 종료 (세션 삭제됨)
 | 문제 | 원인 | 해결책 |
 |------|------|--------|
 | Claude Code에서 한글 입력 깨짐 | [iOS IME 버그](https://github.com/anthropics/claude-code/issues/15705) | 메모앱에서 한글 타이핑 후 복사붙여넣기 |
-| Mosh 사용 시 한글 입력 깨짐 | Mosh의 locale/IME 처리 문제 | Mosh OFF, 일반 SSH 사용 |
+| Mosh 사용 시 셸 한글 입력 깨짐 | Mosh의 locale/IME 처리 문제 | 어차피 Claude Code도 복붙 필요하므로 Mosh ON 유지, 한글은 복붙 |
 | `mosh-server: command not found` | SSH 세션에서 Homebrew 경로 누락 | Termius에서 서버 경로를 `/opt/homebrew/bin/mosh-server`로 지정 |
 | SSH `connection refused` | 원격 로그인 미활성화 | `sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist` |
 | `brew install --cask tailscale` 실패 | sudo 필요 | 터미널에서 직접 실행 |
@@ -270,7 +271,7 @@ exit                     # 2. tmux 세션 종료 (세션 삭제됨)
 
 - macOS 26.3 (Apple Silicon, Mac mini)
 - tmux 3.6a
-- Mosh 1.4.0 (설치했으나 한글 문제로 미사용)
+- Mosh 1.4.0
 - Termius (iOS, 무료 플랜)
 - Tailscale 1.94.2
 - 작성일: 2026-02-22

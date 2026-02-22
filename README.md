@@ -22,7 +22,7 @@ flowchart LR
 |------|------|------------|
 | **Tailscale** | VPN | Access your Mac from anywhere without port forwarding or firewall config |
 | **tmux** | Session persistence | Claude Code keeps running even if SSH disconnects (details below) |
-| **Mosh** | Connection stability | Protocol on top of SSH. Survives cellular↔wifi switches and brief signal drops. **Currently unused due to Korean input bug on iOS** |
+| **Mosh** | Connection stability | Protocol on top of SSH. Survives cellular↔wifi switches and brief signal drops. Korean input breaks in shell, but since Claude Code also requires copy-paste for Korean, we use Mosh for connection stability |
 | **Termius** | SSH client | Terminal app for iPhone |
 | **ntfy** | Push notifications | Get alerted on your phone when Claude Code is waiting for input |
 
@@ -106,8 +106,8 @@ tailscale ip
 brew install mosh
 ```
 
-> **Known issue**: Mosh breaks Korean input on iOS. We use plain SSH instead.
-> Mosh path if needed: `/opt/homebrew/bin/mosh-server`
+> Mosh breaks Korean input in shell, but Claude Code also requires copy-paste for Korean anyway.
+> Recommended for connection stability.
 
 ### 4. Configure tmux
 
@@ -178,7 +178,8 @@ curl -d "test" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Port**: 22
    - **Username**: your mac username
    - **Password**: Mac login password
-   - **Mosh**: OFF (Mosh breaks Korean input in shell. Claude Code Korean input is a separate bug regardless of Mosh)
+   - **Mosh**: ON
+   - **Mosh Command**: `/opt/homebrew/bin/mosh-server new -s -c 256 -l LANG=en_US.UTF-8`
 
 ---
 
@@ -261,7 +262,7 @@ exit                     # 2. Exit tmux session (destroys it)
 | Issue | Cause | Workaround |
 |-------|-------|------------|
 | Korean input broken in Claude Code | [iOS IME bug](https://github.com/anthropics/claude-code/issues/15705) | Type in Notes app, paste into terminal |
-| Korean input broken with Mosh | Mosh locale/IME handling | Use plain SSH (Mosh OFF) |
+| Korean input broken in shell with Mosh | Mosh locale/IME handling | Keep Mosh ON for stability, use copy-paste for Korean (same as Claude Code) |
 | `mosh-server: command not found` | Homebrew path not in SSH PATH | Set server path to `/opt/homebrew/bin/mosh-server` in Termius |
 | SSH `connection refused` | Remote Login not enabled | `sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist` |
 | `brew install --cask tailscale` fails | Needs sudo | Run manually in terminal, not via Claude Code |
@@ -270,7 +271,7 @@ exit                     # 2. Exit tmux session (destroys it)
 
 - macOS 26.3 (Apple Silicon, Mac mini)
 - tmux 3.6a
-- Mosh 1.4.0 (installed but not used due to Korean input issue)
+- Mosh 1.4.0
 - Termius (iOS, free plan)
 - Tailscale 1.94.2
 - Date: 2026-02-22
