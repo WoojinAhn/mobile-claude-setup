@@ -22,6 +22,7 @@ flowchart LR
 |------|------|------------|
 | **Tailscale** | VPN | Access your Mac from anywhere without port forwarding or firewall config |
 | **tmux** | Session persistence | Claude Code keeps running even if SSH disconnects (details below) |
+| **Mosh** | Connection stability | Protocol on top of SSH. Survives cellular↔wifi switches and brief signal drops. **Currently unused due to Korean input bug on iOS** |
 | **Termius** | SSH client | Terminal app for iPhone |
 | **ntfy** | Push notifications | Get alerted on your phone when Claude Code is waiting for input |
 
