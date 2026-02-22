@@ -55,6 +55,7 @@ Without this, every signal drop on the subway means restarting Claude Code from 
 ### Mac
 - macOS with Homebrew (`/opt/homebrew`)
 - tmux: `brew install tmux`
+- Mosh (optional): `brew install mosh`
 
 ### iPhone (install from App Store)
 - **Termius** — SSH client (free)

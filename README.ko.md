@@ -55,6 +55,7 @@ SSH는 tmux를 **들여다보는 창문**일 뿐입니다. 창문을 닫아도(S
 ### Mac
 - Homebrew가 설치된 macOS (`/opt/homebrew`)
 - tmux 설치: `brew install tmux`
+- Mosh 설치 (선택): `brew install mosh`
 
 ### iPhone (App Store에서 설치)
 - **Termius** — SSH 클라이언트 (무료)
