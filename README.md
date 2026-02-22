@@ -16,6 +16,39 @@ flowchart LR
   F -.->|push| A
 ```
 
+## Keeping Your Mac Ready
+
+Your Mac must be in the following state for remote access at any time:
+
+- **Powered on** — sleep is OK, shutdown is not
+- **Network stays active during sleep** — `System Settings → Energy → Wake for network access` enabled
+- **Tailscale running** — add to Login Items for auto-start on boot
+- **SSH enabled** — persists across reboots once enabled
+
+> Mac mini / desktop: just leave it on. MacBook: closing the lid is fine (sleep mode keeps network alive), but watch battery drain.
+
+## What is tmux?
+
+tmux is an **independent virtual terminal** that runs inside your Mac.
+
+Without tmux:
+```
+iPhone → SSH connection → Claude Code
+              ↑
+       disconnect = Claude Code dies
+```
+
+With tmux:
+```
+iPhone → SSH connection → tmux → Claude Code
+              ↑                      ↑
+       disconnect here         still running
+```
+
+SSH is just a **window** into tmux. Closing the window (SSH disconnect) doesn't affect the room (tmux). Reconnect anytime and pick up where you left off.
+
+Without this, every signal drop on the subway means restarting Claude Code from scratch.
+
 ## Prerequisites
 
 ### Mac
