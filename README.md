@@ -26,6 +26,17 @@ flowchart LR
 | **Termius** | SSH client | Terminal app for iPhone |
 | **ntfy** | Push notifications | Get alerted on your phone when Claude Code is waiting for input |
 
+### Does Tailscale route all iPhone traffic through the VPN?
+
+No — Tailscale uses **split tunneling** by default. Only traffic destined for Tailscale-registered devices (your Mac's `100.x.x.x` address) goes through the VPN. Everything else (YouTube, apps, etc.) goes directly as usual.
+
+```
+Regular internet traffic  →  direct (no VPN)
+Mac access (100.x.x.x)   →  via Tailscale
+```
+
+The routing decision is a kernel-level IP lookup — nanosecond-scale per packet, the same work the OS already does for every packet. The only real battery cost is encryption, and that only kicks in when you're actually connected to your Mac.
+
 ### What is tmux?
 
 tmux is an **independent virtual terminal** that runs inside your Mac.
@@ -93,6 +104,12 @@ brew install --cask tailscale
 > **Note**: Requires sudo. If it fails in Claude Code, run manually in terminal.
 
 - Launch Tailscale app and log in
+- Add to Login Items for auto-start on boot:
+
+```bash
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Tailscale.app", hidden:false}'
+```
+
 - Install Tailscale on iPhone (App Store), log in with same account
 - Get your Tailscale IP:
 

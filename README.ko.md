@@ -26,6 +26,17 @@ flowchart LR
 | **Termius** | SSH 클라이언트 | 아이폰에서 터미널 접속하는 앱 |
 | **ntfy** | 푸시 알림 | Claude Code가 입력 대기 중이면 폰에 알림 |
 
+### Tailscale을 켜두면 아이폰 트래픽이 전부 VPN을 통하나요?
+
+아닙니다. Tailscale은 기본적으로 **Split Tunneling** 구조입니다. Tailscale에 등록된 기기(Mac의 `100.x.x.x` 주소)로 향하는 트래픽만 VPN을 경유하고, 나머지(유튜브, 앱 등)는 평소처럼 직접 나갑니다.
+
+```
+일반 인터넷 트래픽        →  직접 연결 (VPN 미경유)
+Mac 접속 (100.x.x.x)    →  Tailscale 경유
+```
+
+라우팅 판단은 OS 커널의 IP 룩업 — 패킷당 나노초 단위 연산으로, 스마트폰이 이미 모든 패킷에 대해 하고 있는 작업입니다. 실제 배터리를 소모하는 암호화/복호화는 Mac에 실제로 접속 중일 때만 발생합니다.
+
 ### tmux란?
 
 tmux는 **터미널 안의 독립적인 가상 터미널**입니다.
@@ -93,6 +104,12 @@ brew install --cask tailscale
 > **참고**: sudo가 필요하므로 Claude Code에서 실패하면 터미널에서 직접 실행.
 
 - Tailscale 앱 실행 후 로그인
+- 부팅 시 자동 실행되도록 Login Items에 추가:
+
+```bash
+osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Tailscale.app", hidden:false}'
+```
+
 - iPhone에도 Tailscale 앱 설치 (App Store) → 같은 계정으로 로그인
 - Tailscale IP 확인:
 
