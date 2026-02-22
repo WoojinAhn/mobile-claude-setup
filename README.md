@@ -102,15 +102,30 @@ set -g status-right '%H:%M'
    - Full topic: `woojin-claude-Woojinui-Macmini`
 
 ### Mac
-Add to `~/.zshrc`:
+Add Notification hook to `~/.claude/settings.json`:
 
-```bash
-# Claude Code with ntfy push notification on completion
-ccn() {
-  claude "$@"
-  curl -s -d "Claude Code 작업 완료" "ntfy.sh/woojin-claude-$(hostname -s)" > /dev/null
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$SSH_CONNECTION\" ]; then MSG=$(cat | jq -r '.message // \"Claude Code 알림\"'); curl -s -d \"$MSG\" ntfy.sh/woojin-claude-$(hostname -s) > /dev/null; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
+
+- `$SSH_CONNECTION` check: only sends push when connected via SSH (no alerts on local terminal)
+- Triggers on `permission_prompt` (permission request) and `idle_prompt` (idle 60+ seconds)
+- No notification spam during active conversation
 
 Test:
 ```bash
@@ -141,12 +156,6 @@ claude
 # Open Termius, connect to host
 tmux attach -t claude
 # Session resumes exactly where you left off
-```
-
-### With ntfy notification:
-```bash
-ccn "your prompt here"
-# Push notification sent when Claude Code finishes
 ```
 
 ### Reconnect after disconnect:

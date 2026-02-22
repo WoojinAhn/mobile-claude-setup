@@ -102,15 +102,30 @@ set -g status-right '%H:%M'
    - 전체 토픽: `woojin-claude-Woojinui-Macmini`
 
 ### Mac
-`~/.zshrc`에 추가:
+`~/.claude/settings.json`에 Notification hook 추가:
 
-```bash
-# Claude Code 완료 시 ntfy 푸시 알림
-ccn() {
-  claude "$@"
-  curl -s -d "Claude Code 작업 완료" "ntfy.sh/woojin-claude-$(hostname -s)" > /dev/null
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$SSH_CONNECTION\" ]; then MSG=$(cat | jq -r '.message // \"Claude Code 알림\"'); curl -s -d \"$MSG\" ntfy.sh/woojin-claude-$(hostname -s) > /dev/null; fi",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
+
+- `$SSH_CONNECTION` 체크: SSH 접속일 때만 푸시 발송 (로컬 터미널에서는 알림 안 옴)
+- `permission_prompt` (퍼미션 요청) 및 `idle_prompt` (60초 이상 대기) 시 발동
+- 대화 중에는 알림이 오지 않아 스팸 방지
 
 테스트:
 ```bash
@@ -141,12 +156,6 @@ claude
 # Termius로 접속 후
 tmux attach -t claude
 # 기존 세션이 그대로 보임
-```
-
-### ntfy 알림과 함께 실행:
-```bash
-ccn "프롬프트 내용"
-# Claude Code 작업 끝나면 아이폰에 푸시 알림
 ```
 
 ### 연결 끊긴 후 재접속:
