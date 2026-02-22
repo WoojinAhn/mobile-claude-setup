@@ -6,9 +6,14 @@
 
 ## 구성도
 
-```
-iPhone (Termius) --SSH--> Tailscale VPN ---> Mac (tmux 세션 > Claude Code)
-                                         \-> ntfy.sh 푸시 알림 (작업 완료 시)
+```mermaid
+flowchart LR
+  A["📱 iPhone\n(Termius)"] -->|SSH| B["🔒 Tailscale\nVPN"]
+  B --> C["🖥 Mac"]
+  C --> D["tmux\n세션"]
+  D --> E["Claude\nCode"]
+  E -->|작업 완료 시| F["🔔 ntfy.sh\n푸시 알림"]
+  F -.->|push| A
 ```
 
 ## 사전 준비

@@ -6,9 +6,14 @@ Access Claude Code from iPhone via SSH (Tailscale + tmux + Termius + ntfy).
 
 ## Architecture
 
-```
-iPhone (Termius) --SSH--> Tailscale VPN ---> Mac (tmux session > Claude Code)
-                                         \-> ntfy.sh push notification on completion
+```mermaid
+flowchart LR
+  A["📱 iPhone\n(Termius)"] -->|SSH| B["🔒 Tailscale\nVPN"]
+  B --> C["🖥 Mac"]
+  C --> D["tmux\nsession"]
+  D --> E["Claude\nCode"]
+  E -->|on completion| F["🔔 ntfy.sh\npush notification"]
+  F -.->|push| A
 ```
 
 ## Prerequisites
