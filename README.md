@@ -209,8 +209,13 @@ tc() {
 }
 ```
 
-- No session → creates tmux + auto-starts Claude Code
-- Session exists → attaches to existing session
+How it works:
+1. `tmux attach -t claude` — attach to "claude" session if it exists
+2. `2>/dev/null` — suppress error message if session doesn't exist
+3. `||` — if above fails (no session), run the following
+4. `tmux new -s claude -d` — create new session in background
+5. `tmux send-keys ... "claude" Enter` — send `claude` command to the session
+6. `tmux attach -t claude` — attach to the session
 
 ### Scenario 1: Start on Mac, continue on iPhone
 

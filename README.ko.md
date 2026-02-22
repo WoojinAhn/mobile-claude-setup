@@ -209,8 +209,13 @@ tc() {
 }
 ```
 
-- 세션 없으면 → tmux 생성 + Claude Code 자동 실행
-- 세션 있으면 → 기존 세션에 바로 붙기
+동작 흐름:
+1. `tmux attach -t claude` — "claude" 세션이 있으면 붙기
+2. `2>/dev/null` — 세션 없을 때 에러 메시지 숨기기
+3. `||` — 위가 실패하면 (세션 없으면) 아래 실행
+4. `tmux new -s claude -d` — 백그라운드에서 새 세션 생성
+5. `tmux send-keys ... "claude" Enter` — 생성된 세션에 `claude` 명령어 전송
+6. `tmux attach -t claude` — 세션에 붙기
 
 ### 시나리오 1: Mac에서 시작, 아이폰에서 이어서
 
