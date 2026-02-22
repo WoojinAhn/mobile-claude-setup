@@ -144,25 +144,62 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
 
 ## 사용법
 
-### 세션 시작 (Mac에서):
+### 시나리오 1: Mac에서 시작, 아이폰에서 이어서
+
+**Mac (외출 전):**
 ```bash
-tmux new -s claude
-claude
-# Ctrl-b d 로 detach (또는 그냥 나가도 됨)
+tmux new -s claude       # 1. tmux 세션 생성
+claude                   # 2. Claude Code 시작
+# 작업 지시 후 자리 비움
+# detach 안 해도 됨 — 덮개 닫거나 그냥 나가면 됨
 ```
 
-### 아이폰에서 접속:
+**iPhone (이동 중):**
 ```bash
-# Termius로 접속 후
-tmux attach -t claude
-# 기존 세션이 그대로 보임
+# 1. Termius 열고 호스트 접속
+tmux attach -t claude    # 2. 기존 세션에 붙기
+# Claude Code가 그대로 보임
+# ntfy 푸시 알림: Claude가 입력 대기 60초 넘으면 알림 옴
 ```
 
-### 연결 끊긴 후 재접속:
+### 시나리오 2: 아이폰에서 바로 시작
+
 ```bash
-tmux attach -t claude
-# tmux가 세션을 유지하므로 SSH 끊겨도 작업 상태 그대로
+# 1. Termius 열고 호스트 접속
+tmux new -s claude       # 2. tmux 세션 생성
+claude                   # 3. Claude Code 시작
+# 한글 입력: 메모앱에서 타이핑 후 복사붙여넣기
 ```
+
+### 시나리오 3: 연결 끊긴 후 재접속
+
+```bash
+# 연결 끊김 (지하철, 와이파이 전환 등)
+# 1. Termius 다시 열고 호스트 접속
+tmux attach -t claude    # 2. 세션은 살아있음
+```
+
+### 종료하기
+
+```bash
+# Claude Code 안에서:
+/exit                    # 1. Claude Code 종료 (또는 Ctrl+C)
+
+# 셸로 돌아온 후:
+exit                     # 2. tmux 세션 종료 (세션 삭제됨)
+# 또는: Ctrl-b d 로 detach (세션 유지, 나중에 다시 붙기 가능)
+```
+
+### tmux 단축키 모음
+
+| 동작 | 키 |
+|------|-----|
+| Detach (세션 유지하고 나가기) | `Ctrl-b d` |
+| 위로 스크롤 | `Ctrl-b [` 후 방향키, `q`로 나가기 |
+| 세션 목록 | `tmux ls` |
+| 세션 삭제 | `tmux kill-session -t claude` |
+| 새 윈도우 | `Ctrl-b c` |
+| 윈도우 전환 | `Ctrl-b n` (다음) / `Ctrl-b p` (이전) |
 
 ## 알려진 문제
 

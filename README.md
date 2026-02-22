@@ -144,25 +144,62 @@ curl -d "test" "ntfy.sh/woojin-claude-$(hostname -s)"
 
 ## Usage
 
-### Start session (Mac):
+### Scenario 1: Start on Mac, continue on iPhone
+
+**Mac (before leaving):**
 ```bash
-tmux new -s claude
-claude
-# Ctrl-b d to detach (or just leave)
+tmux new -s claude       # 1. Create tmux session
+claude                   # 2. Start Claude Code
+# Give Claude a task, then leave
+# No need to detach — just close the lid or walk away
 ```
 
-### Connect from iPhone:
+**iPhone (on the go):**
 ```bash
-# Open Termius, connect to host
-tmux attach -t claude
-# Session resumes exactly where you left off
+# 1. Open Termius, connect to host
+tmux attach -t claude    # 2. Attach to existing session
+# Claude Code is right where you left it
+# ntfy push notification arrives when Claude needs input (after 60s idle)
 ```
 
-### Reconnect after disconnect:
+### Scenario 2: Start directly from iPhone
+
 ```bash
-tmux attach -t claude
-# tmux keeps the session alive even if SSH disconnects
+# 1. Open Termius, connect to host
+tmux new -s claude       # 2. Create tmux session
+claude                   # 3. Start Claude Code
+# Korean input: type in Notes app, paste into terminal
 ```
+
+### Scenario 3: Reconnect after disconnect
+
+```bash
+# Connection dropped (subway, wifi switch, etc.)
+# 1. Reopen Termius, connect to host
+tmux attach -t claude    # 2. Session is still alive
+```
+
+### Ending a session
+
+```bash
+# Inside Claude Code:
+/exit                    # 1. Exit Claude Code (or Ctrl+C)
+
+# Back in shell:
+exit                     # 2. Exit tmux session (destroys it)
+# Or: Ctrl-b d to detach (keeps session alive for later)
+```
+
+### tmux cheat sheet
+
+| Action | Keys |
+|--------|------|
+| Detach (keep session alive) | `Ctrl-b d` |
+| Scroll up | `Ctrl-b [` then arrow keys, `q` to exit |
+| List sessions | `tmux ls` |
+| Kill a session | `tmux kill-session -t claude` |
+| New window | `Ctrl-b c` |
+| Switch window | `Ctrl-b n` (next) / `Ctrl-b p` (prev) |
 
 ## Known Issues
 
