@@ -199,6 +199,8 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Mosh**: ON
    - **Mosh Command**: `/opt/homebrew/bin/mosh-server new -s -c 256 -l LANG=en_US.UTF-8`
 
+> **참고**: `/opt/homebrew`는 Apple Silicon Mac 기준. Intel Mac은 `/usr/local`로 대체.
+
 ---
 
 ## Mac 상시 준비 상태
@@ -297,7 +299,7 @@ exit                     # 2. tmux 세션 종료 (세션 삭제됨)
 |------|------|--------|
 | Claude Code에서 한글 입력 깨짐 | [iOS IME 버그](https://github.com/anthropics/claude-code/issues/15705) | 메모앱에서 한글 타이핑 후 복사붙여넣기 |
 | Mosh 사용 시 셸 한글 입력 깨짐 | Mosh의 locale/IME 처리 문제 | 어차피 Claude Code도 복붙 필요하므로 Mosh ON 유지, 한글은 복붙 |
-| `mosh-server: command not found` | SSH 세션에서 Homebrew 경로 누락 | Termius에서 서버 경로를 `/opt/homebrew/bin/mosh-server`로 지정 |
+| `mosh-server: command not found` | SSH 세션에서 Homebrew 경로 누락 | Apple Silicon: `/opt/homebrew/bin/mosh-server`, Intel: `/usr/local/bin/mosh-server` |
 | SSH `connection refused` | 원격 로그인 미활성화 | `sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist` |
 | `brew install --cask tailscale` 실패 | sudo 필요 | 터미널에서 직접 실행 |
 

@@ -199,6 +199,8 @@ curl -d "test" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Mosh**: ON
    - **Mosh Command**: `/opt/homebrew/bin/mosh-server new -s -c 256 -l LANG=en_US.UTF-8`
 
+> **Note**: `/opt/homebrew` is for Apple Silicon Macs. Intel Macs use `/usr/local` — replace accordingly.
+
 ---
 
 ## Keeping Your Mac Ready
@@ -297,7 +299,7 @@ exit                     # 2. Exit tmux session (destroys it)
 |-------|-------|------------|
 | Korean input broken in Claude Code | [iOS IME bug](https://github.com/anthropics/claude-code/issues/15705) | Type in Notes app, paste into terminal |
 | Korean input broken in shell with Mosh | Mosh locale/IME handling | Keep Mosh ON for stability, use copy-paste for Korean (same as Claude Code) |
-| `mosh-server: command not found` | Homebrew path not in SSH PATH | Set server path to `/opt/homebrew/bin/mosh-server` in Termius |
+| `mosh-server: command not found` | Homebrew path not in SSH PATH | Apple Silicon: `/opt/homebrew/bin/mosh-server`, Intel: `/usr/local/bin/mosh-server` |
 | SSH `connection refused` | Remote Login not enabled | `sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist` |
 | `brew install --cask tailscale` fails | Needs sudo | Run manually in terminal, not via Claude Code |
 
