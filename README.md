@@ -177,7 +177,7 @@ curl -d "test" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Port**: 22
    - **Username**: your mac username
    - **Password**: Mac login password
-   - **Mosh**: OFF (Korean input breaks with Mosh ON)
+   - **Mosh**: OFF (Mosh breaks Korean input in shell. Claude Code Korean input is a separate bug regardless of Mosh)
 
 ---
 

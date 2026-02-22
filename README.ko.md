@@ -177,7 +177,7 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Port**: 22
    - **Username**: Mac 사용자 이름
    - **Password**: Mac 로그인 비밀번호
-   - **Mosh**: OFF (Mosh 켜면 한글 입력 깨짐)
+   - **Mosh**: OFF (Mosh 켜면 셸에서 한글 입력 깨짐. Claude Code 한글 입력은 Mosh와 무관하게 별도 버그)
 
 ---
 
