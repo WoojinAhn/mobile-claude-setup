@@ -16,18 +16,16 @@ flowchart LR
   F -.->|push| A
 ```
 
-## Mac 상시 준비 상태
+## 구성 요소 소개
 
-원격에서 아무 때나 접속하려면 Mac이 다음 상태여야 합니다:
+| 도구 | 역할 | 왜 필요한지 |
+|------|------|-------------|
+| **Tailscale** | VPN | 포트포워딩/방화벽 없이 어디서든 Mac에 접속. 카페, 지하철, 호텔 와이파이 어디든 |
+| **tmux** | 세션 유지 | SSH 끊겨도 Claude Code가 계속 돌아감 (아래 상세 설명) |
+| **Termius** | SSH 클라이언트 | 아이폰에서 터미널 접속하는 앱 |
+| **ntfy** | 푸시 알림 | Claude Code가 입력 대기 중이면 폰에 알림 |
 
-- **전원 켜져 있을 것** — 잠자기(sleep)는 OK, 종료(shutdown)는 안 됨
-- **잠자기 중에도 네트워크 유지** — `시스템 설정 → 에너지 → 네트워크 접근으로 깨우기` 활성화
-- **Tailscale 실행 중** — 로그인 항목에 추가해두면 부팅 시 자동 실행됨
-- **SSH 활성화** — 한 번 켜두면 재부팅해도 유지됨
-
-> Mac mini나 데스크탑은 항상 켜두면 되고, MacBook은 덮개를 닫아도 잠자기 상태에서 네트워크가 유지되므로 접속 가능합니다 (다만 배터리 소모 주의).
-
-## tmux란?
+### tmux란?
 
 tmux는 **터미널 안의 독립적인 가상 터미널**입니다.
 
@@ -49,6 +47,8 @@ SSH는 tmux를 **들여다보는 창문**일 뿐입니다. 창문을 닫아도(S
 
 이게 없으면 지하철에서 신호 한 번 끊길 때마다 Claude Code를 처음부터 다시 시작해야 합니다.
 
+---
+
 ## 사전 준비
 
 ### Mac
@@ -63,7 +63,11 @@ SSH는 tmux를 **들여다보는 창문**일 뿐입니다. 창문을 닫아도(S
 ### 계정
 - Tailscale 계정 (Google/GitHub/Apple 로그인) — Mac과 iPhone에서 같은 계정 사용
 
-## 1. SSH (원격 로그인) 활성화
+---
+
+## 설치 가이드
+
+### 1. SSH (원격 로그인) 활성화
 
 ```bash
 # 상태 확인
@@ -78,7 +82,7 @@ sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
 nc -z localhost 22 && echo "SSH 열림" || echo "SSH 닫힘"
 ```
 
-## 2. Tailscale 설치
+### 2. Tailscale 설치
 
 ```bash
 brew install --cask tailscale
@@ -95,7 +99,7 @@ tailscale ip
 # 출력: 100.x.x.x (Termius에 이 IP 입력)
 ```
 
-## 3. Mosh 설치 (선택사항)
+### 3. Mosh 설치 (선택사항)
 
 ```bash
 brew install mosh
@@ -104,7 +108,7 @@ brew install mosh
 > **주의**: Mosh 사용 시 iOS에서 한글 입력이 깨짐. 일반 SSH를 사용하는 것을 권장.
 > Mosh 경로 (필요 시): `/opt/homebrew/bin/mosh-server`
 
-## 4. tmux 설정
+### 4. tmux 설정
 
 `~/.tmux.conf` 작성:
 
@@ -126,15 +130,15 @@ set -g status-left-length 20
 set -g status-right '%H:%M'
 ```
 
-## 5. ntfy 설정 (푸시 알림)
+### 5. ntfy 설정 (푸시 알림)
 
-### iPhone
+#### iPhone
 1. App Store에서 **ntfy** 설치
 2. 토픽 구독: `woojin-claude-{호스트이름}`
    - 호스트이름 확인: `hostname -s` (예: `Woojinui-Macmini`)
    - 전체 토픽: `woojin-claude-Woojinui-Macmini`
 
-### Mac
+#### Mac
 `~/.claude/settings.json`에 Notification hook 추가:
 
 ```json
@@ -166,7 +170,7 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
 # iPhone에 푸시 알림이 와야 함
 ```
 
-## 6. Termius 설정 (iPhone)
+### 6. Termius 설정 (iPhone)
 
 1. 새 호스트 추가:
    - **Hostname**: Tailscale IP (`100.x.x.x`)
@@ -174,6 +178,21 @@ curl -d "테스트" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Username**: Mac 사용자 이름
    - **Password**: Mac 로그인 비밀번호
    - **Mosh**: OFF (Mosh 켜면 한글 입력 깨짐)
+
+---
+
+## Mac 상시 준비 상태
+
+설치가 끝나면 원격에서 아무 때나 접속할 수 있도록 Mac을 준비해둡니다:
+
+- **전원 켜져 있을 것** — 잠자기(sleep)는 OK, 종료(shutdown)는 안 됨
+- **잠자기 중에도 네트워크 유지** — `시스템 설정 → 에너지 → 네트워크 접근으로 깨우기` 활성화
+- **Tailscale 실행 중** — 로그인 항목에 추가해두면 부팅 시 자동 실행됨
+- **SSH 활성화** — 한 번 켜두면 재부팅해도 유지됨
+
+> Mac mini나 데스크탑은 항상 켜두면 되고, MacBook은 덮개를 닫아도 잠자기 상태에서 네트워크가 유지되므로 접속 가능합니다 (다만 배터리 소모 주의).
+
+---
 
 ## 사용법
 
@@ -233,6 +252,8 @@ exit                     # 2. tmux 세션 종료 (세션 삭제됨)
 | 세션 삭제 | `tmux kill-session -t claude` |
 | 새 윈도우 | `Ctrl-b c` |
 | 윈도우 전환 | `Ctrl-b n` (다음) / `Ctrl-b p` (이전) |
+
+---
 
 ## 알려진 문제
 

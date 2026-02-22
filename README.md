@@ -16,18 +16,16 @@ flowchart LR
   F -.->|push| A
 ```
 
-## Keeping Your Mac Ready
+## Components
 
-Your Mac must be in the following state for remote access at any time:
+| Tool | Role | Why needed |
+|------|------|------------|
+| **Tailscale** | VPN | Access your Mac from anywhere without port forwarding or firewall config |
+| **tmux** | Session persistence | Claude Code keeps running even if SSH disconnects (details below) |
+| **Termius** | SSH client | Terminal app for iPhone |
+| **ntfy** | Push notifications | Get alerted on your phone when Claude Code is waiting for input |
 
-- **Powered on** — sleep is OK, shutdown is not
-- **Network stays active during sleep** — `System Settings → Energy → Wake for network access` enabled
-- **Tailscale running** — add to Login Items for auto-start on boot
-- **SSH enabled** — persists across reboots once enabled
-
-> Mac mini / desktop: just leave it on. MacBook: closing the lid is fine (sleep mode keeps network alive), but watch battery drain.
-
-## What is tmux?
+### What is tmux?
 
 tmux is an **independent virtual terminal** that runs inside your Mac.
 
@@ -49,6 +47,8 @@ SSH is just a **window** into tmux. Closing the window (SSH disconnect) doesn't 
 
 Without this, every signal drop on the subway means restarting Claude Code from scratch.
 
+---
+
 ## Prerequisites
 
 ### Mac
@@ -63,7 +63,11 @@ Without this, every signal drop on the subway means restarting Claude Code from 
 ### Account
 - Tailscale account (Google/GitHub/Apple login) — use same account on both Mac and iPhone
 
-## 1. Enable SSH (Remote Login)
+---
+
+## Installation
+
+### 1. Enable SSH (Remote Login)
 
 ```bash
 # Check status
@@ -78,7 +82,7 @@ Verify:
 nc -z localhost 22 && echo "SSH OPEN" || echo "SSH CLOSED"
 ```
 
-## 2. Install Tailscale
+### 2. Install Tailscale
 
 ```bash
 brew install --cask tailscale
@@ -95,7 +99,7 @@ tailscale ip
 # Output: 100.x.x.x (use this for Termius)
 ```
 
-## 3. Install Mosh (Optional)
+### 3. Install Mosh (Optional)
 
 ```bash
 brew install mosh
@@ -104,7 +108,7 @@ brew install mosh
 > **Known issue**: Mosh breaks Korean input on iOS. We use plain SSH instead.
 > Mosh path if needed: `/opt/homebrew/bin/mosh-server`
 
-## 4. Configure tmux
+### 4. Configure tmux
 
 Write `~/.tmux.conf`:
 
@@ -126,15 +130,15 @@ set -g status-left-length 20
 set -g status-right '%H:%M'
 ```
 
-## 5. Configure ntfy (Push Notifications)
+### 5. Configure ntfy (Push Notifications)
 
-### iPhone
+#### iPhone
 1. Install **ntfy** from App Store
 2. Subscribe to topic: `woojin-claude-{hostname}`
    - Check hostname: `hostname -s` (e.g., `Woojinui-Macmini`)
    - Full topic: `woojin-claude-Woojinui-Macmini`
 
-### Mac
+#### Mac
 Add Notification hook to `~/.claude/settings.json`:
 
 ```json
@@ -166,7 +170,7 @@ curl -d "test" "ntfy.sh/woojin-claude-$(hostname -s)"
 # iPhone should receive push notification
 ```
 
-## 6. Termius Setup (iPhone)
+### 6. Termius Setup (iPhone)
 
 1. New Host:
    - **Hostname**: Tailscale IP (`100.x.x.x`)
@@ -174,6 +178,21 @@ curl -d "test" "ntfy.sh/woojin-claude-$(hostname -s)"
    - **Username**: your mac username
    - **Password**: Mac login password
    - **Mosh**: OFF (Korean input breaks with Mosh ON)
+
+---
+
+## Keeping Your Mac Ready
+
+Once installation is complete, keep your Mac ready for remote access at any time:
+
+- **Powered on** — sleep is OK, shutdown is not
+- **Network stays active during sleep** — `System Settings → Energy → Wake for network access` enabled
+- **Tailscale running** — add to Login Items for auto-start on boot
+- **SSH enabled** — persists across reboots once enabled
+
+> Mac mini / desktop: just leave it on. MacBook: closing the lid is fine (sleep mode keeps network alive), but watch battery drain.
+
+---
 
 ## Usage
 
@@ -233,6 +252,8 @@ exit                     # 2. Exit tmux session (destroys it)
 | Kill a session | `tmux kill-session -t claude` |
 | New window | `Ctrl-b c` |
 | Switch window | `Ctrl-b n` (next) / `Ctrl-b p` (prev) |
+
+---
 
 ## Known Issues
 
