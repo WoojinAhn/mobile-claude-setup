@@ -328,3 +328,7 @@ exit                     # 2. Exit tmux session (destroys it)
 - Termius (iOS, free plan)
 - Tailscale 1.94.2
 - Date: 2026-02-22
+
+## See Also
+
+- [Claude Code On-The-Go: Running 6 Parallel Agents from Your Phone](https://news.hada.io/topic?id=25578) — A similar mobile workflow using Vultr VM + Git worktree for parallel agents (vs. this guide's direct Mac access approach)

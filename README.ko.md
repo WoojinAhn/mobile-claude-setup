@@ -328,3 +328,7 @@ exit                     # 2. tmux 세션 종료 (세션 삭제됨)
 - Termius (iOS, 무료 플랜)
 - Tailscale 1.94.2
 - 작성일: 2026-02-22
+
+## 참고 자료
+
+- [Claude Code On-The-Go: 스마트폰에서 6개 병렬 에이전트 실행하기](https://news.hada.io/topic?id=25578) — Vultr VM + Git worktree 기반 병렬 에이전트 방식의 모바일 워크플로우 (이 가이드의 Mac 직접 접속 방식과 비교해볼 만함)
